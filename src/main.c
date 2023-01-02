@@ -20,8 +20,8 @@ int main(int argc, char **argv)
         configuration config;
         read_configuration(argv[1], &config);
 
-        printf("Config loaded with: debug=%s lat=%e lon=%e dist=%e url=%s",
-              config.debug?"yes":"no", config.latitude, config.longitude, config.distance,
+        printf("Config loaded with: debug=%d lat=%e lon=%e dist=%e url=%s\n",
+              config.debug, config.latitude, config.longitude, config.distance,
               config.url);
 
 

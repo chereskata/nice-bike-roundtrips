@@ -18,9 +18,9 @@ static int assign_values_to_struct(void *data,
 
         #define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
         if (MATCH("development", "debug")) {
-                if (strcmp("yes", value)) {
+                if (strcmp("yes", value) == 0) {
                         config->debug = true;
-                } else if (strcmp("no", value)) {
+                } else if (strcmp("no", value) == 0) {
                         config->debug = false;
                 } else {
                         fprintf(stderr, "%s", "Error reading config file - ");
@@ -80,7 +80,7 @@ int read_configuration(char *ini_path, configuration *config)
         config->longitude = 7.414952;
         // config.url missing, because length is variable
 
-        if (ini_parse(ini_path, assign_values_to_struct, &config) < 0) {
+        if (ini_parse(ini_path, assign_values_to_struct, config) < 0) {
                 fprintf(stderr, "%s", "Error reading config file - ");
                 fprintf(stderr, "%s", "ini_parse did return an error code");
                 config->latitude = NAN;
