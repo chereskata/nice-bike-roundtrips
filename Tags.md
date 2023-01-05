@@ -3,6 +3,16 @@
  the OpenStreetMap database.
 * Tags have to be actively selected to be put inside the query result of the Overpass API (whitelist)
 * some tags have no special category, but are important for the heatmap the routing algorithm will use to determine "good" routes
+* OSM has an ID for each node, way and realtion. So merging individual queries should be possible
+
+## heatmapping: how to categorize good and bad spots on the map
+* every tag (OSM map object) shall receive a rating based on the influence to the wellbeing of the bike rider
+* depending on the object the influence is only immediate (a tree next to the road) or from distance (a nice mountain in the background)
+* every object produces a concentric wave ripple, where wavetops (usually one) mark the point of most positive influence.
+* negative rated objects (such as nearby motorways, big active industrial facilites, area of shopping centres, ...) have an inversed ripple with a negative peak, starting form zero
+* after gathering the dataset each object will be analyzed once and
+the corresponding ripples literally added (also in a mathematical sense) to the heatmap
+* heatmap precicion should be only "good enough"
 
 ## Selection criterion of tags used for routing
 ### key=[highway](https://wiki.openstreetmap.org/wiki/Key:highway) - roads and paths
@@ -60,4 +70,92 @@ Rivers are abstractly covered by `natural=water`.
 | tourism | attraction | / |
 | tourism | picnic_site | / |
 | tourism | viewpoint | / |
+
+* some [man_made](https://wiki.openstreetmap.org/wiki/Key:man_made)
+tags, namely:
+
+| key | value | discard if subtag is present |  
+| --- | ----- | ---------------------------- |
+| man_made | adit | / |
+| man_made | bridge | start_date > 1950 (or assign heat to old bridges only) |
+| man_made | cairn | / |
+| man_made | cellar_entrance | / |
+| man_made | column | historic!=yes |
+| man_made | cross | / |
+| man_made | flagpole | / |
+| man_made | lighthouse | / |
+| man_made | mineshaft | / |
+| man_made | obelisk | / |
+| man_made | observatory | / |
+| man_made | pier | / |
+| man_made | water_tower | / |
+| man_made | watermill | / |
+| man_made | windmill | / |
+| man_made | windpump | / |
+| man_made | drinking_fountain | / |
+
+* some [historic](https://wiki.openstreetmap.org/wiki/Key:historic) tags: 
+
+| key | value | discard if subtag is present |  
+| --- | ----- | ---------------------------- |
+| historic | memorial | / |
+| historic | archaeological_site | / |
+| historic | wayside_cross | / |
+| historic | ruins | / |
+| historic | wayside_shrine | / |
+| historic | monument | / |
+| historic | building | / |
+| historic | castle | / |
+| historic | citywalls | / |
+| historic | heritage | / |
+| historic | manor | / |
+| historic | church | / |
+| historic | fort | / |
+| historic | city_gate | / |
+| historic | house | / |
+| historic | hollow_way | / |
+| historic | wreck | / |
+| historic | cannon | / |
+| historic | aircraft | / |
+| historic | farm | / |
+| historic | tower | / |
+| historic | monastery | / |
+| historic | bridge | / |
+| historic | cemetery | / |
+| historic | aqueduct | / |
+| historic | locomotive | / |
+| historic | ship | / |
+| historic | tank | / |
+| historic | railway_car | / |
+| historic | vehicle | / |
+
+
+## basic overpass turbo query
+```graphql
+/*
+This query looks for nodes, ways and relations 
+with the given key/value combination.
+Choose your region and hit the Run button above!
+*/
+[out:json][timeout:25];
+// gather results
+(
+  // query part for: “historic=fort”
+  node["historic"="fort"]({{bbox}});
+  way["historic"="fort"]({{bbox}});
+  relation["historic"="fort"]({{bbox}});
+);
+// print results
+out body;
+>;
+out skel qt;
+```
+
+
+
+
+
+
+
+
 
