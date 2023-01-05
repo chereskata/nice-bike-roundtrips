@@ -63,6 +63,7 @@ static int assign_values_to_struct(void *data,
         } else {
                 return 0; // Unsuccessful parsing of .ini file
         }
+        #undef MATCH
         return 1; // All ok, key=value pair matched some setting
 }
 
